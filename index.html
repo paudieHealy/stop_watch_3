@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>Stopwatch</title>
+    <link href='https://fonts.googleapis.com/css?family=Inconsolata:400,700' rel='stylesheet' type='text/css'>
+    <style>
+        * {
+            font-family: 'Inconsolata', monospace;
+            font-weight: 400;
+            background-color: aqua;
+        }
+        .container {
+            width: 600px;
+            margin: 100px auto;
+            
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            text-align: center;
+        }
+        th {
+            font-weight: 700;
+        }
+        td {
+            padding: 30px;
+            background-color: bisque;
+        }      
+        #table01 input[type="button"] {
+            width: 120px;
+            height: 40px;
+            background-color: mediumaquamarine;
+            margin-top: 30px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        #table02 input[type="button"] , #resetAllBtn {
+            width: 120px;
+            height: 40px;
+            background-color: lightgrey;
+            font-size: 18px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>STOPWATCH</h1>
+    <br><br>
+    <table border="1" cellspacing="0" id="table01">
+        <tr>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+        </tr>
+        <tr>
+            <td>
+                <h2 id="timerLabel1">00:00.00</h2>
+                <br>
+                <input type="button" value="START" id="start1">
+                <input type="button" value="RESET" id="reset1">
+            </td>
+            <td>
+                <h2 id="timerLabel2">00:00.00</h2>
+                <br>
+                <input type="button" value="START" id="start2">
+                <input type="button" value="RESET" id="reset2">
+            </td>
+            <td>
+                <h2 id="timerLabel3">00:00.00</h2>
+                <br>
+                <input type="button" value="START" id="start3">
+                <input type="button" value="RESET" id="reset3">
+            </td>
+        </tr>
+    </table>
+    <br><br>
+    <table id="table02">
+        <tr>
+            <td><button onclick="location.href='index.html'" id="resetAllBtn">RESET</button></td>
+            <td><input type="button" value="START" id="moveAllBtn"></td>
+        </tr>
+    </table>
+     
+    <script>
+         
+        function init() {
+             
+            var stopwatch1 = new Timer("timerLabel1", "start1");
+            document.getElementById("start1").onclick = function(){
+                stopwatch1.start();
+            }
+            document.getElementById("reset1").onclick = function(){
+                stopwatch1.reset();
+            }
+             
+            var stopwatch2 = new Timer("timerLabel2", "start2");
+            document.getElementById("start2").onclick = function(){
+                stopwatch2.start();
+            }
+            document.getElementById("reset2").onclick = function(){
+                stopwatch2.reset();
+            }
+             
+            var stopwatch3 = new Timer("timerLabel3", "start3");
+            document.getElementById("start3").onclick = function(){
+                stopwatch3.start();
+            }
+            document.getElementById("reset3").onclick = function(){
+                stopwatch3.reset();
+            }
+             
+             
+            document.getElementById("moveAllBtn").onclick = function(){
+                 
+                if (document.getElementById("moveAllBtn").value == 'START') {
+                    stopwatch1.status = 0;
+                    stopwatch2.status = 0;
+                    stopwatch3.status = 0;
+                     
+                } else {
+                    stopwatch1.status = 1;
+                    stopwatch2.status = 1;
+                    stopwatch3.status = 1;
+                }
+                 
+                stopwatch1.start();
+                stopwatch2.start();
+                stopwatch3.start();
+                 
+            }       
+             
+        }
+         
+         
+        function Timer(timerLabelId, startBtnId) {
+            this.status = 0;
+            this.time = 0;
+            this.timerLabel = document.getElementById(timerLabelId);
+            this.startBtn = document.getElementById(startBtnId);
+        }
+         
+        Timer.prototype.start = function() {
+             
+            if (this.status == 0) {
+                this.status = 1;
+                this.startBtn.value = "STOP";
+                this.count();
+                 
+            } else {
+                this.status = 0;
+                this.startBtn.value = "START";
+  
+            }           
+        }
+         
+        Timer.prototype.count = function() {
+             
+            if (this.status == 1) {
+                var that = this;
+                setTimeout(function(){
+                    that.time++;
+                    that.timerLabel.innerHTML = getTime(that.time);
+                    that.count();
+                }, 10);
+                document.getElementById("moveAllBtn").value = 'STOP';
+                 
+            } else {
+                document.getElementById("moveAllBtn").value = 'START';
+            }
+        }
+         
+        Timer.prototype.reset = function() {
+            this.status = 0;
+            this.time = 0;
+            this.startBtn.value = "START";
+            this.timerLabel.innerHTML = "00:00.00";
+        }
+         
+         
+        function getTime(time) {
+             
+            var min = Math.floor(time/100/60);
+            var sec = Math.floor(time/100);
+            var mSec = time%100;
+             
+            if (min < 10) {
+                min = "0" + min;
+            }
+            if (sec >= 60) {
+                sec = sec % 60;
+            }
+            if (sec < 10) {
+                sec = "0" + sec;
+            }
+             
+            return min + ":" + sec + "." + mSec;
+             
+        }
+         
+        init();
+  
+    </script>
+</div>
+</body>
+</html>
